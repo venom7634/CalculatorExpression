@@ -23,6 +23,6 @@ public class ParserTest {
     @Test
     public void testParseExpressionExcessSign(){
         String expression = "51+8651+";
-        Expression ex = ParserExpression.parseExpression(expression); 
+        Expression ex = ParserExpression.parseExpression(expression);
     }
 }
