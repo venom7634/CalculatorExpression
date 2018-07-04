@@ -12,22 +12,22 @@ public class ParserExpression {
         return createExpression(expression);
     }
 
-    static long countOperation(String expression){
+    private static long countOperation(String expression){
         return expression.chars().filter(ch -> ch == '+' || ch == '-').count();
     }
 
-    static Expression createExpression(String expression){
+    private static Expression createExpression(String expression){
         if(countOperation(expression) == 0){
             return new ExpressionAlone(Double.valueOf(expression));
         } else
         if(countOperation(expression)%2==0){
-            return creationOfTwoExpressions(expression,countOperation(expression));
+            return creationOfTwoSubexpressions(expression,countOperation(expression));
         } else {
-            return creationOfTwoExpressions(expression,(countOperation(expression)+1)/2);
+            return creationOfTwoSubexpressions(expression,(countOperation(expression)+1)/2);
         }
     }
 
-    static Expression creationOfTwoExpressions(String expression, long countSignSeparation){
+    private static Expression creationOfTwoSubexpressions(String expression, long countSignSeparation){
         int separatorPoint = 0;
         for (int i = 0;countSignSeparation > 0;i++){
             if(expression.charAt(i) == '-' || expression.charAt(i)=='+'){
