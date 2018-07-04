@@ -8,22 +8,21 @@ public class ParserTest {
     @Test
     public void testParseExpression(){
         String expression = "5+6+1-42+5-21+6";
-        Expression ex =ParserExpression.parseExpression(expression); // OK. type ex - ExpressionSum
+        Expression ex =ParserExpression.parseExpression(expression);
 
-//        expression = "-5+6";
-//        ex = ParserExpression.parseExpression(expression); // java.lang.NumberFormatException
-
-//        expression = "156";
-//        ex = ParserExpression.parseExpression(expression); // OK. type ex - ExpressionAlone
-
-//        expression = "-16";
-//        ex = ParserExpression.parseExpression(expression); // java.lang.NumberFormatException
-
-//        expression = "242++21";
-//        ex = ParserExpression.parseExpression(expression); // java.lang.NumberFormatException
-
-//        expression = "51+8651+";
-//        ex = ParserExpression.parseExpression(expression); //java.lang.NumberFormatException
+        expression = "156";
+        ex = ParserExpression.parseExpression(expression);
     }
 
+    @Test
+    public void testParseExpressionDoubleSign(){
+        String expression = "242++21";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+
+    @Test
+    public void testParseExpressionExcessSign(){
+        String expression = "51+8651+";
+        Expression ex = ParserExpression.parseExpression(expression); 
+    }
 }
