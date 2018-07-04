@@ -25,4 +25,20 @@ public class ParserTest {
         String expression = "51+8651+";
         Expression ex = ParserExpression.parseExpression(expression);
     }
+
+    @Test
+    public void testParseExpressionWithParentheses(){
+        String expression = "50+(7-5)";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+    @Test
+    public void testParseExpressionWithDoubleParentheses(){
+        String expression = "25+(6-(5-2))";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+    @Test
+    public void testParseExpressionWithMoreParentheses(){
+        String expression = "50+(7-5))))))))))))))))))))";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
 }

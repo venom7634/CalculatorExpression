@@ -9,33 +9,10 @@ public class ParserExpression {
 
     public static Expression parseExpression(String expression) {
         expression.replaceAll(" ","");
-        if(checkOnValidExpression(expression))
+        if(CheckingExpression.checkOnValidExpression(expression))
             return createExpression(expression);
         else return null;
 
-    }
-
-    private static boolean checkOnValidExpression(String expression){
-        if(expression.matches("[-]?([(]*[0-9]+[)]*[+-])+[0-9]+[)]*$")){
-            return checkParentheses(expression);
-        } else{
-            System.out.print("Error! Expression not valid\n");
-            return false;
-        }
-    }
-
-    private static boolean checkParentheses(String expression){
-        int rightParentheses = 0;
-        int leftParentheses = 0;
-        for (int i = 0; i<expression.length();i++){
-            if (expression.charAt(i) == ')')
-                rightParentheses++;
-            if (expression.charAt(i) == '(')
-                leftParentheses++;
-        }
-        if (rightParentheses == leftParentheses)
-            return true;
-        return false;
     }
 
     private static long countOperation(String expression){
@@ -45,15 +22,13 @@ public class ParserExpression {
     private static Expression createExpression(String expression){
         expression = trimExpressionFromParentheses(expression);
 
-        if (expression.indexOf('(')!=0 && expression.indexOf('(')!=-1){
+        if (expression.indexOf('(')!=-1){
             return creationOfTwoSubexpressions(expression,expression.indexOf('(')-1);
         }
 
-        if (expression.lastIndexOf(')')!=-1 && expression.lastIndexOf(')')!=expression.length()-1){
+        if (expression.lastIndexOf(')')!=-1){
             return creationOfTwoSubexpressions(expression,expression.lastIndexOf(')')+1);
         }
-
-
 
         if(countOperation(expression) == 0){
             return new ExpressionAlone(Double.valueOf(expression));
@@ -66,6 +41,8 @@ public class ParserExpression {
                     searchPointSeparator(expression,(countOperation(expression)+1)/2));
         }
     }
+
+
 
     private  static  String trimExpressionFromParentheses(String expression){
         if (expression.indexOf('(')==0&&expression.lastIndexOf(')')==expression.length()-1){
