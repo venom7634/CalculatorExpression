@@ -3,7 +3,7 @@ package parser;
 public class CheckingExpression {
 
     static boolean checkOnValidExpression(String expression){
-        if(expression.matches("[-]?([(]*[0-9]+[)]*[+-])+[0-9]+[)]*$")){
+        if(expression.matches("[-]?([(]*[0-9]+[)]*[+*/-])+[0-9]+[)]*$")){
             return checkParentheses(expression);
         } else{
             System.out.print("Error! Expression not valid\n");

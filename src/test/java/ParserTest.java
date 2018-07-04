@@ -32,13 +32,34 @@ public class ParserTest {
         Expression ex = ParserExpression.parseExpression(expression);
     }
     @Test
+    public void testParseExpressionFullInParentheses(){
+        String expression = "(6+5(2-3))";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+    @Test
     public void testParseExpressionWithDoubleParentheses(){
         String expression = "25+(6-(5-2))";
         Expression ex = ParserExpression.parseExpression(expression);
     }
+
     @Test
-    public void testParseExpressionWithMoreParentheses(){
+    public void testParseExpressionMoreParentheses(){
         String expression = "50+(7-5))))))))))))))))))))";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+    @Test
+    public void testParseExpressionMul(){
+        String expression = "40+2*5";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+    @Test
+    public void testParseExpressionDiv(){
+        String expression = "36/6-5";
+        Expression ex = ParserExpression.parseExpression(expression);
+    }
+    @Test
+    public void testParseBigExpression(){
+        String expression = "(3*6+7*(6-5*3*(4-5)))/15-25*5-(65-20*3)";
         Expression ex = ParserExpression.parseExpression(expression);
     }
 }

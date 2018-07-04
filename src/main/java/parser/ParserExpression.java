@@ -1,9 +1,6 @@
 package parser;
 
-import expression.Expression;
-import expression.ExpressionAlone;
-import expression.ExpressionSub;
-import expression.ExpressionSum;
+import expression.*;
 
 public class ParserExpression {
 
@@ -15,51 +12,79 @@ public class ParserExpression {
 
     }
 
-    private static long countOperation(String expression){
-        return expression.chars().filter(ch -> ch == '+' || ch == '-').count();
+    private static Expression createExpression(String expressionString){
+
+        if(expressionString.charAt(0) == '(' && expressionString.charAt(expressionString.length()-1)==')')
+            expressionString = trimExpressionFromParentheses(expressionString);
+
+        Expression expression;
+        if ((expression = performOperationsLowPriority(expressionString))!= null)
+            return expression;
+
+        if ((expression = performOperationsHighPriority(expressionString))!= null)
+            return expression;
+
+        return new ExpressionAlone(Double.valueOf(expressionString));
     }
 
-    private static Expression createExpression(String expression){
-        expression = trimExpressionFromParentheses(expression);
-
-        if (expression.indexOf('(')!=-1){
-            return creationOfTwoSubexpressions(expression,expression.indexOf('(')-1);
+    private  static  Expression performOperationsHighPriority(String expression){
+        int index;
+        if(expression.indexOf('(') == 0)
+            index = expression.lastIndexOf(')')+1;
+        else index = expression.indexOf('(')-1;
+        if(index == -2){
+            if ((expression.indexOf('*'))!=-1){
+                index = expression.indexOf('*');
+            }
+            if ((expression.indexOf('/'))!=-1){
+                index = expression.indexOf('/');
+            }
         }
+        return creationOfTwoSubexpressions(expression,index);
 
-        if (expression.lastIndexOf(')')!=-1){
-            return creationOfTwoSubexpressions(expression,expression.lastIndexOf(')')+1);
-        }
-
-        if(countOperation(expression) == 0){
-            return new ExpressionAlone(Double.valueOf(expression));
-        } else
-        if(countOperation(expression)%2==0){
-            return creationOfTwoSubexpressions(expression,
-                    searchPointSeparator(expression,countOperation(expression)));
-        } else {
-            return creationOfTwoSubexpressions(expression,
-                    searchPointSeparator(expression,(countOperation(expression)+1)/2));
-        }
     }
 
-
+    private static Expression performOperationsLowPriority(String expression){
+        int validParentheses = 0;
+        for (int i=expression.length()-1; i > 0;i--){
+            switch (expression.charAt(i)){
+                case '(':
+                    validParentheses--;
+                    break;
+                case ')':
+                    validParentheses++;
+                    break;
+                case '+':
+                    if(validParentheses == 0)
+                        return creationOfTwoSubexpressions(expression,i);
+                    break;
+                case '-':
+                    if(validParentheses == 0)
+                        return creationOfTwoSubexpressions(expression,i);
+                    break;
+            }
+        }
+        return null;
+    }
 
     private  static  String trimExpressionFromParentheses(String expression){
-        if (expression.indexOf('(')==0&&expression.lastIndexOf(')')==expression.length()-1){
+        boolean expressionInParentheses = true;
+        int countParentheses = 0;
+
+        for (int i = 1; i < expression.length()-2;i++){
+            if(expression.charAt(i) == '(')
+                countParentheses++;
+            if(expression.charAt(i) == ')')
+                countParentheses--;
+            if(countParentheses < 0){
+                expressionInParentheses = false;
+                break;
+            }
+        }
+        if (expressionInParentheses){
             return expression.substring(1,expression.length()-1);
         }
         return expression;
-    }
-
-    private static int searchPointSeparator(String expression, long countSignSeparation){
-        int separatorPoint = 0;
-        for (int i = 0;countSignSeparation > 0;i++){
-            if(expression.charAt(i) == '-' || expression.charAt(i)=='+'){
-                countSignSeparation-=1;
-                separatorPoint = i;
-            }
-        }
-        return separatorPoint;
     }
 
     private static Expression creationOfTwoSubexpressions(String expression, int separatorPoint){
@@ -74,6 +99,12 @@ public class ParserExpression {
                         createExpression(expression.substring(separatorPoint+1,expression.length())));
             case '-':
                 return new ExpressionSub(createExpression(expression.substring(0,separatorPoint)),
+                        createExpression(expression.substring(separatorPoint+1,expression.length())));
+            case '*':
+                return new ExpressionMul(createExpression(expression.substring(0,separatorPoint)),
+                        createExpression(expression.substring(separatorPoint+1,expression.length())));
+            case '/':
+                return new ExpressionDiv(createExpression(expression.substring(0,separatorPoint)),
                         createExpression(expression.substring(separatorPoint+1,expression.length())));
         }
         return null;
