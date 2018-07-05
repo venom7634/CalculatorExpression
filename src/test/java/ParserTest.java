@@ -80,4 +80,19 @@ public class ParserTest {
         Expression ex = ParserExpression.parseInitialExpression(expression);
         assertTrue(ex.calculate() == -119);
     }
+
+    @Test
+    public void testParseExpressionWithPower(){
+        String expression = "5^2-10";
+        Expression ex = ParserExpression.parseInitialExpression(expression);
+        assertTrue(ex.calculate() == 15);
+    }
+
+    @Test
+    public void testParseBigExpressionWithPower(){
+        String expression = "50-6*(12-2*(3+2))^3-50/(4^(1/2))";
+        Expression ex = ParserExpression.parseInitialExpression(expression);
+        double vr = ex.calculate();
+        assertTrue(ex.calculate() == -23);
+    }
 }
