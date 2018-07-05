@@ -70,7 +70,7 @@ public class ParserTest {
     }
 
     @Test
-    public void testParseWithRemainderOfDivision(){
+    public void testParseWithDivisionWithRemainder(){
         String expression = "(47-2)%40";
         Expression ex = ParserExpression.parseInitialExpression(expression);
         System.out.println(ex.calculate());
@@ -83,6 +83,14 @@ public class ParserTest {
         Expression ex = ParserExpression.parseInitialExpression(expression);
         System.out.println(ex.calculate());
         assertTrue(ex.calculate() == 1);
+    }
+
+    @Test
+    public void testParseExpressionWithConstant(){
+        String expression = "pi-e";
+        Expression ex = ParserExpression.parseInitialExpression(expression);
+        System.out.println(ex.calculate());
+        assertTrue(ex.calculate() == Math.PI-Math.E);
     }
 
     @Test

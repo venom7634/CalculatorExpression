@@ -29,11 +29,23 @@ public class ParserExpression {
         }
 
         positionOperation = ChecksExpression.checkHighPriorityOperationsInExpression(expression);
-        if (positionOperation != -1){
+        if (positionOperation != -2){
             return creationOfTwoSubexpressions(expression,positionOperation);
         }
 
+        if(ChecksExpression.checkOnConstantValue(expression)){
+            return new ExpressionAloneValue(takeConstantValue(expression));
+        }
+
         return new ExpressionAloneValue(Double.valueOf(expression));
+    }
+
+    private static double takeConstantValue(String constant){
+        if(constant.equals("e")){
+            return Math.E;
+        } else {
+            return Math.PI;
+        }
     }
 
     private static Expression creationOfTwoSubexpressions(String expression, int separatorPoint){
@@ -54,7 +66,7 @@ public class ParserExpression {
                 case '^':
                     return new ExpressionPow(firstValue, secondValue);
                 case '%':
-                    return new ExpressionRemainderOfDiv(firstValue,secondValue);
+                    return new ExpressionDivisionWithRemainder(firstValue,secondValue);
             }
         }
         return new ExpressionAloneValue(Double.valueOf(expression));
