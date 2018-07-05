@@ -65,7 +65,7 @@ public class ParserExpression {
                 case '^':
                     return new ExpressionPow(firstValue, secondValue);
                 case '%':
-                    return new ExpressionDivisionWithRemainder(firstValue,secondValue);
+                    return new ExpressionRemainderOfDivision(firstValue,secondValue);
             }
         }
         return new ExpressionAloneValue(Double.valueOf(expression));
