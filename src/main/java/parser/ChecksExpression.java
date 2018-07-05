@@ -44,7 +44,7 @@ public class ChecksExpression {
             return false;
     }
 
-    public static int checkLowPriorityOperationsInExpression(String expression){
+    public static int searchLowPriorityOperationsInExpression(String expression){
         int index = -1;
         char[] operations = ParserExpression.LOW_PRIORITY_OPERATIONS;
 
@@ -64,9 +64,26 @@ public class ChecksExpression {
             }
         }
         return index;
+
     }
 
-    public static int checkHighPriorityOperationsInExpression(String expression){
+    public static boolean checkExpressionOnLowPriorityOperations(String expression){
+        if(searchLowPriorityOperationsInExpression(expression) == -1){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean checkExpressionOnHighPriorityOperations(String expression){
+        if(searchHighPriorityOperationsInExpression(expression) == -2){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static int searchHighPriorityOperationsInExpression(String expression){
         int index;
         char[] operations = ParserExpression.HIGH_PRIORITY_OPERATIONS;
 

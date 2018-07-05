@@ -17,20 +17,18 @@ public class ParserExpression {
     }
 
     private static Expression createExpressionFromInput(String expression){
-        int positionOperation;
-
         if (ChecksExpression.checkExpressionOnParentheses(expression)){
             expression = expression.substring(1, expression.length() - 1);
         }
 
-        positionOperation = ChecksExpression.checkLowPriorityOperationsInExpression(expression);
-        if (positionOperation != -1){
-            return creationOfTwoSubexpressions(expression,positionOperation);
+        if (ChecksExpression.checkExpressionOnLowPriorityOperations(expression)){
+            return creationOfTwoSubexpressions(expression,
+                    ChecksExpression.searchLowPriorityOperationsInExpression(expression));
         }
 
-        positionOperation = ChecksExpression.checkHighPriorityOperationsInExpression(expression);
-        if (positionOperation != -2){
-            return creationOfTwoSubexpressions(expression,positionOperation);
+        if (ChecksExpression.checkExpressionOnHighPriorityOperations(expression)){
+            return creationOfTwoSubexpressions(expression,
+                    ChecksExpression.searchHighPriorityOperationsInExpression(expression));
         }
 
         if(ChecksExpression.checkOnConstantValue(expression)){
@@ -39,6 +37,7 @@ public class ParserExpression {
 
         return new ExpressionAloneValue(Double.valueOf(expression));
     }
+
 
     private static double takeConstantValue(String constant){
         if(constant.equals("e")){
