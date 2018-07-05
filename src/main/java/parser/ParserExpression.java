@@ -3,7 +3,7 @@ package parser;
 import expression.*;
 
 public class ParserExpression {
-    final static public char[] HIGH_PRIORITY_OPERATIONS = {'*', '/', '^'};
+    final static public char[] HIGH_PRIORITY_OPERATIONS = {'*', '/', '^', '%'};
     final static public char[] LOW_PRIORITY_OPERATIONS = {'-', '+'};
 
     public static Expression parseInitialExpression(String expression) {
@@ -53,6 +53,8 @@ public class ParserExpression {
                     return new ExpressionDiv(firstValue, secondValue);
                 case '^':
                     return new ExpressionPow(firstValue, secondValue);
+                case '%':
+                    return new ExpressionRemainderOfDiv(firstValue,secondValue);
             }
         }
         return new ExpressionAloneValue(Double.valueOf(expression));

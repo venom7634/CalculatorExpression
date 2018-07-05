@@ -3,7 +3,7 @@ package parser;
 public class ChecksExpression {
 
     public static boolean checkOnValidExpression(String expression){
-        if(expression.matches("[-]?([(]*[0-9]+[)]*[-+*/^])+[0-9]+[)]*$")){
+        if(expression.matches("[-]?([(]*[0-9]+[)]*[-%+*/^])+[0-9]+[)]*$")){
             return checkParentheses(expression);
         } else {
             return false;
@@ -70,14 +70,16 @@ public class ChecksExpression {
         int index;
         char[] operations = ParserExpression.HIGH_PRIORITY_OPERATIONS;
 
-        if(expression.indexOf('(') == 0)
-            index = expression.lastIndexOf(')') + 1;
-        else index = expression.indexOf('(') - 1;
+        if(expression.indexOf('(') != 0)
+            index = expression.indexOf('(') - 1;
+        else index = -2;
 
         if(index == -2){
             for(char operation : operations){
-                if ((expression.indexOf(operation)) != -1){
-                    index = expression.indexOf(operation);
+                if ((expression.lastIndexOf(operation)) != -1){
+                    if(index < expression.lastIndexOf(operation)){
+                        index = expression.lastIndexOf(operation);
+                    }
                 }
             }
         }

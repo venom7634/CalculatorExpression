@@ -1,5 +1,6 @@
 import expression.Expression;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import parser.NotValidException;
 import parser.ParserExpression;
 
@@ -54,45 +55,43 @@ public class ParserTest {
     }
 
     @Test
-    public void testParseExpressionWithDoubleParentheses(){
-        String expression = "25+(6-(5-2))";
-        Expression ex = ParserExpression.parseInitialExpression(expression);
-        assertTrue(ex.calculate() == 28);
-    }
-
-    @Test
     public void testParseExpressionMul(){
         String expression = "40+2*5";
         Expression ex = ParserExpression.parseInitialExpression(expression);
+        System.out.println(ex.calculate());
         assertTrue(ex.calculate() == 50);
+    }
+    @Test
+    public void testParseExpressionWithPower(){
+        String expression = "5^2-10";
+        Expression ex = ParserExpression.parseInitialExpression(expression);
+        System.out.println(ex.calculate());
+        assertTrue(ex.calculate() == 15);
+    }
+
+    @Test
+    public void testParseWithRemainderOfDivision(){
+        String expression = "(47-2)%40";
+        Expression ex = ParserExpression.parseInitialExpression(expression);
+        System.out.println(ex.calculate());
+        assertTrue(ex.calculate() == 5);
     }
 
     @Test
     public void testParseExpressionDiv(){
         String expression = "36/6-5";
         Expression ex = ParserExpression.parseInitialExpression(expression);
+        System.out.println(ex.calculate());
         assertTrue(ex.calculate() == 1);
     }
 
     @Test
     public void testParseBigExpression(){
-        String expression = "(3*6+7*(6-5*3*(4-5)))/15-25*5-(65-20*3)";
+        String expression = "(4*(4+(17-(75%60))^3)-3)/5";
         Expression ex = ParserExpression.parseInitialExpression(expression);
-        assertTrue(ex.calculate() == -119);
+        System.out.println(ex.calculate());
+        assertTrue(ex.calculate() == 9);
     }
 
-    @Test
-    public void testParseExpressionWithPower(){
-        String expression = "5^2-10";
-        Expression ex = ParserExpression.parseInitialExpression(expression);
-        assertTrue(ex.calculate() == 15);
-    }
 
-    @Test
-    public void testParseBigExpressionWithPower(){
-        String expression = "50-6*(12-2*(3+2))^3-50/(4^(1/2))";
-        Expression ex = ParserExpression.parseInitialExpression(expression);
-        double vr = ex.calculate();
-        assertTrue(ex.calculate() == -23);
-    }
 }
