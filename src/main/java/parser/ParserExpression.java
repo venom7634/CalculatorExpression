@@ -9,7 +9,7 @@ public class ParserExpression {
     public static Expression parseInitialExpression(String expression) {
         expression.replaceAll(" ","");
 
-        if(CheckingExpression.checkOnValidExpression(expression)){
+        if(ChecksExpression.checkOnValidExpression(expression)){
             return createExpressionFromInput(expression);
         }
         else
@@ -19,16 +19,16 @@ public class ParserExpression {
     private static Expression createExpressionFromInput(String expression){
         int positionOperation;
 
-        if (CheckingExpression.checkExpressionOnParentheses(expression)){
+        if (ChecksExpression.checkExpressionOnParentheses(expression)){
             expression = expression.substring(1, expression.length() - 1);
         }
 
-        positionOperation = CheckingExpression.checkLowPriorityOperationsInExpression(expression);
+        positionOperation = ChecksExpression.checkLowPriorityOperationsInExpression(expression);
         if (positionOperation != -1){
             return creationOfTwoSubexpressions(expression,positionOperation);
         }
 
-        positionOperation = CheckingExpression.checkHighPriorityOperationsInExpression(expression);
+        positionOperation = ChecksExpression.checkHighPriorityOperationsInExpression(expression);
         if (positionOperation != -1){
             return creationOfTwoSubexpressions(expression,positionOperation);
         }
