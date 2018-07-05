@@ -4,18 +4,20 @@ import expression.*;
 
 public class ParserExpression {
 
-    public static Expression parseExpression(String expression) {
+    public static Expression parseInitialExpression(String expression) {
         expression.replaceAll(" ","");
+
         if(CheckingExpression.checkOnValidExpression(expression))
-            return createExpression(expression);
+            return createExpressionFromInput(expression);
         else return null;
 
     }
 
-    private static Expression createExpression(String expressionString){
+    private static Expression createExpressionFromInput(String expressionString){
 
-        if(expressionString.charAt(0) == '(' && expressionString.charAt(expressionString.length()-1)==')')
-            expressionString = trimExpressionFromParentheses(expressionString);
+        if (CheckingExpression.checkExpressionOnParentheses(expressionString)){
+            expressionString = expressionString.substring(1,expressionString.length()-1);
+        }
 
         Expression expression;
         if ((expression = performOperationsLowPriority(expressionString))!= null)
@@ -24,7 +26,7 @@ public class ParserExpression {
         if ((expression = performOperationsHighPriority(expressionString))!= null)
             return expression;
 
-        return new ExpressionAlone(Double.valueOf(expressionString));
+        return new ExpressionAloneValue(Double.valueOf(expressionString));
     }
 
     private  static  Expression performOperationsHighPriority(String expression){
@@ -67,45 +69,25 @@ public class ParserExpression {
         return null;
     }
 
-    private  static  String trimExpressionFromParentheses(String expression){
-        boolean expressionInParentheses = true;
-        int countParentheses = 0;
-
-        for (int i = 1; i < expression.length()-2;i++){
-            if(expression.charAt(i) == '(')
-                countParentheses++;
-            if(expression.charAt(i) == ')')
-                countParentheses--;
-            if(countParentheses < 0){
-                expressionInParentheses = false;
-                break;
-            }
-        }
-        if (expressionInParentheses){
-            return expression.substring(1,expression.length()-1);
-        }
-        return expression;
-    }
-
     private static Expression creationOfTwoSubexpressions(String expression, int separatorPoint){
         try{
             Double.valueOf(expression);
-            return new ExpressionAlone(Double.valueOf(expression));
+            return new ExpressionAloneValue(Double.valueOf(expression));
         }catch (NumberFormatException e){
         }
+
+        Expression firstValue = createExpressionFromInput(expression.substring(0,separatorPoint));
+        Expression secondValue = createExpressionFromInput(expression.substring(separatorPoint+1,expression.length()));
+
         switch (expression.charAt(separatorPoint)){
             case '+':
-                return new ExpressionSum(createExpression(expression.substring(0,separatorPoint)),
-                        createExpression(expression.substring(separatorPoint+1,expression.length())));
+                return new ExpressionSum(firstValue,secondValue);
             case '-':
-                return new ExpressionSub(createExpression(expression.substring(0,separatorPoint)),
-                        createExpression(expression.substring(separatorPoint+1,expression.length())));
+                return new ExpressionSub(firstValue,secondValue);
             case '*':
-                return new ExpressionMul(createExpression(expression.substring(0,separatorPoint)),
-                        createExpression(expression.substring(separatorPoint+1,expression.length())));
+                return new ExpressionMul(firstValue,secondValue);
             case '/':
-                return new ExpressionDiv(createExpression(expression.substring(0,separatorPoint)),
-                        createExpression(expression.substring(separatorPoint+1,expression.length())));
+                return new ExpressionDiv(firstValue,secondValue);
         }
         return null;
     }

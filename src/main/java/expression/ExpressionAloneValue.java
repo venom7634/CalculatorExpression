@@ -1,10 +1,10 @@
 package expression;
 
-public class ExpressionAlone implements Expression{
+public class ExpressionAloneValue implements Expression{
 
     double value;
 
-    public ExpressionAlone(double value){
+    public ExpressionAloneValue(double value){
         this.value = value;
 
     }
