@@ -9,7 +9,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the expression:");
         Expression ex = ParserExpression.parseInitialExpression(sc.next());
-        System.out.println("Result: "+ex.calculate());
+        System.out.println("Result: " + ex.calculate());
 
         sc.close();
     }

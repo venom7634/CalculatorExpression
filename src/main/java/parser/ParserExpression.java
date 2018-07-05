@@ -3,92 +3,56 @@ package parser;
 import expression.*;
 
 public class ParserExpression {
+    final static public char[] HIGH_PRIORITY_OPERATIONS = {'*', '/'};
+    final static public char[] LOW_PRIORITY_OPERATIONS = {'-', '+'};
 
     public static Expression parseInitialExpression(String expression) {
         expression.replaceAll(" ","");
 
-        if(CheckingExpression.checkOnValidExpression(expression))
+        if(CheckingExpression.checkOnValidExpression(expression)){
             return createExpressionFromInput(expression);
-        else return null;
-
+        }
+        else
+            throw new NotValidException("Expression not valid!");
     }
 
-    private static Expression createExpressionFromInput(String expressionString){
+    private static Expression createExpressionFromInput(String expression){
+        int positionOperation;
 
-        if (CheckingExpression.checkExpressionOnParentheses(expressionString)){
-            expressionString = expressionString.substring(1,expressionString.length()-1);
+        if (CheckingExpression.checkExpressionOnParentheses(expression)){
+            expression = expression.substring(1, expression.length() - 1);
         }
 
-        Expression expression;
-        if ((expression = performOperationsLowPriority(expressionString))!= null)
-            return expression;
-
-        if ((expression = performOperationsHighPriority(expressionString))!= null)
-            return expression;
-
-        return new ExpressionAloneValue(Double.valueOf(expressionString));
-    }
-
-    private  static  Expression performOperationsHighPriority(String expression){
-        int index;
-        if(expression.indexOf('(') == 0)
-            index = expression.lastIndexOf(')')+1;
-        else index = expression.indexOf('(')-1;
-        if(index == -2){
-            if ((expression.indexOf('*'))!=-1){
-                index = expression.indexOf('*');
-            }
-            if ((expression.indexOf('/'))!=-1){
-                index = expression.indexOf('/');
-            }
+        positionOperation = CheckingExpression.checkLowPriorityOperationsInExpression(expression);
+        if (positionOperation != -1){
+            return creationOfTwoSubexpressions(expression,positionOperation);
         }
-        return creationOfTwoSubexpressions(expression,index);
 
-    }
-
-    private static Expression performOperationsLowPriority(String expression){
-        int validParentheses = 0;
-        for (int i=expression.length()-1; i > 0;i--){
-            switch (expression.charAt(i)){
-                case '(':
-                    validParentheses--;
-                    break;
-                case ')':
-                    validParentheses++;
-                    break;
-                case '+':
-                    if(validParentheses == 0)
-                        return creationOfTwoSubexpressions(expression,i);
-                    break;
-                case '-':
-                    if(validParentheses == 0)
-                        return creationOfTwoSubexpressions(expression,i);
-                    break;
-            }
+        positionOperation = CheckingExpression.checkHighPriorityOperationsInExpression(expression);
+        if (positionOperation != -1){
+            return creationOfTwoSubexpressions(expression,positionOperation);
         }
-        return null;
+
+        return new ExpressionAloneValue(Double.valueOf(expression));
     }
 
     private static Expression creationOfTwoSubexpressions(String expression, int separatorPoint){
-        try{
-            Double.valueOf(expression);
-            return new ExpressionAloneValue(Double.valueOf(expression));
-        }catch (NumberFormatException e){
-        }
+        if(separatorPoint != -2){
+            Expression firstValue = createExpressionFromInput(expression.substring(0, separatorPoint));
+            Expression secondValue = createExpressionFromInput(expression.substring
+                    (separatorPoint + 1, expression.length()));
 
-        Expression firstValue = createExpressionFromInput(expression.substring(0,separatorPoint));
-        Expression secondValue = createExpressionFromInput(expression.substring(separatorPoint+1,expression.length()));
-
-        switch (expression.charAt(separatorPoint)){
-            case '+':
-                return new ExpressionSum(firstValue,secondValue);
-            case '-':
-                return new ExpressionSub(firstValue,secondValue);
-            case '*':
-                return new ExpressionMul(firstValue,secondValue);
-            case '/':
-                return new ExpressionDiv(firstValue,secondValue);
+            switch (expression.charAt(separatorPoint)) {
+                case '+':
+                    return new ExpressionSum(firstValue, secondValue);
+                case '-':
+                    return new ExpressionSub(firstValue, secondValue);
+                case '*':
+                    return new ExpressionMul(firstValue, secondValue);
+                case '/':
+                    return new ExpressionDiv(firstValue, secondValue);
+            }
         }
-        return null;
+        return new ExpressionAloneValue(Double.valueOf(expression));
     }
 }
